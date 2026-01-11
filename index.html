@@ -161,8 +161,10 @@ function drawChart(labels, V1_list, V2_list, equilibrium_index) {
       ]
     },
     options: {
-          onClick: null  // disables the default toggle behavior
       plugins: {
+        legend: {
+            onClick: null  // <— clicking a label won’t hide the line
+        },
         annotation: {
           annotations: equilibrium_index !== null ? {
             eq: {
