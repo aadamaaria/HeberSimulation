@@ -1,0 +1,158 @@
+<div>
+  <label>Startvolumen V1 (mL): <input id="v1" type="number" value="100"></label><br>
+  <label>Startvolumen V2 (mL): <input id="v2" type="number" value="0"></label><br>
+  <label>Radius r1 (mm): <input id="r1" type="number" value="4.5" step="0.1"></label><br>
+  <label>Radius r2 (mm): <input id="r2" type="number" value="3" step="0.1"></label><br>
+  <label>Iterationen: <input id="iterations" type="number" value="30"></label><br><br>
+
+  <button onclick="runSimulation()">Simulation starten</button>
+</div>
+
+<canvas id="chart" height="120"></canvas>
+
+<div id="output"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
+
+<script>
+const PI = Math.PI;
+const Vmax = 100;
+
+function round_ml(x) {
+  return Math.round(x * 2) / 2;
+}
+
+function calculate_height(V) {
+  return (V * 1000) / (PI * 15 ** 2);
+}
+
+function calculate_volume(h_mm, tube_radius) {
+  const V_mm3 = PI * tube_radius ** 2 * h_mm;
+  return V_mm3 / 1000;
+}
+
+function simulate_heber(V1, V2, r1, r2) {
+  const V1_prev = V1;
+  const V2_prev = V2;
+
+  const h1 = calculate_height(V1);
+  const h2 = calculate_height(V2);
+
+  const A1 = calculate_volume(h1, r1);
+  const A2 = calculate_volume(h2, r2);
+
+  V1 -= A1;
+  V2 += A1;
+
+  V1 += A2;
+  V2 -= A2;
+
+  return { V1, V2, V1_prev, V2_prev };
+}
+
+let chart = null;
+
+function runSimulation() {
+  let V1 = parseFloat(document.getElementById("v1").value);
+  let V2 = parseFloat(document.getElementById("v2").value);
+  const r1 = parseFloat(document.getElementById("r1").value);
+  const r2 = parseFloat(document.getElementById("r2").value);
+  const iterations = parseInt(document.getElementById("iterations").value);
+
+  let total = V1 + V2;
+  if (total > Vmax) {
+    const scale = Vmax / total;
+    V1 *= scale;
+    V2 *= scale;
+  }
+
+  const V1_list = [];
+  const V2_list = [];
+  const labels = [];
+
+  let equilibrium_index = null;
+  let equilibrium_V1 = null;
+  let equilibrium_V2 = null;
+  let stable_count = 0;
+
+  for (let i = 0; i < iterations; i++) {
+    V1_list.push(V1);
+    V2_list.push(V2);
+    labels.push(i);
+
+    const result = simulate_heber(V1, V2, r1, r2);
+    V1 = result.V1;
+    V2 = result.V2;
+
+    if (
+      round_ml(V1) === round_ml(result.V1_prev) &&
+      round_ml(V2) === round_ml(result.V2_prev)
+    ) {
+      stable_count++;
+    } else {
+      stable_count = 0;
+    }
+
+    if (stable_count >= 2 && equilibrium_index === null) {
+      equilibrium_index = i;
+      equilibrium_V1 = V1;
+      equilibrium_V2 = V2;
+    }
+  }
+
+  drawChart(labels, V1_list, V2_list, equilibrium_index);
+
+  document.getElementById("output").innerHTML =
+    equilibrium_index !== null
+      ? `<b>Gleichgewicht erreicht</b><br>
+         Transfer: ${equilibrium_index + 1}<br>
+         V1 = ${equilibrium_V1.toFixed(1)} mL<br>
+         V2 = ${equilibrium_V2.toFixed(1)} mL`
+      : "<b>Kein Gleichgewicht erreicht</b>";
+}
+
+function drawChart(labels, V1_list, V2_list, equilibrium_index) {
+  const ctx = document.getElementById("chart").getContext("2d");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Volumen V1 (mL)",
+          data: V1_list,
+          borderColor: "blue",
+          fill: false
+        },
+        {
+          label: "Volumen V2 (mL)",
+          data: V2_list,
+          borderColor: "orange",
+          fill: false
+        }
+      ]
+    },
+    options: {
+      plugins: {
+        annotation: {
+          annotations: equilibrium_index !== null ? {
+            eq: {
+              type: "line",
+              xMin: equilibrium_index,
+              xMax: equilibrium_index,
+              borderColor: "red",
+              borderDash: [6, 6],
+              borderWidth: 2
+            }
+          } : {}
+        }
+      }
+    }
+  });
+}
+</script>
+
