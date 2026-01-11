@@ -161,6 +161,7 @@ function drawChart(labels, V1_list, V2_list, equilibrium_index) {
       ]
     },
     options: {
+          onClick: null  // disables the default toggle behavior
       plugins: {
         annotation: {
           annotations: equilibrium_index !== null ? {
