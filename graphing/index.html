@@ -158,10 +158,7 @@ function updateChart() {
     }
   });
 
-  const eqInput = document.getElementById("equilibriumIndex").value;
-  const equilibrium_index = eqInput === "" ? null : Number(eqInput);
-
-  drawChart(labels, V1_list, V2_list, equilibrium_index);
+  drawChart(labels, V1_list, V2_list);
 }
 
 /* Start with one row */
