@@ -61,11 +61,15 @@
 <hr>
 
 <canvas id="chart" width="800" height="400"></canvas>
+<div id="output" style="margin-top: 10px; font-size: 16px;"></div>
 
 <script>
 let chart = null;
 
-/* ===== YOUR FUNCTION (unchanged) ===== */
+
+function round_ml(value) {
+  return Math.round(value * 10) / 10;
+}
 function drawChart(labels, V1_list, V2_list, equilibrium_index) {
   const ctx = document.getElementById("chart").getContext("2d");
 
@@ -157,8 +161,41 @@ function updateChart() {
       labels.push(`Point ${i}`);
     }
   });
+  
+  // Equilibrium detection
+  let stable_count = 0;
+  let equilibrium_index = null;
+  let equilibrium_V1 = null;
+  let equilibrium_V2 = null;
 
-  drawChart(labels, V1_list, V2_list);
+  for (let i = 1; i < V1_list.length; i++) {
+    const V1 = V1_list[i];
+    const V2 = V2_list[i];
+    const V1_prev = V1_list[i - 1];
+    const V2_prev = V2_list[i - 1];
+
+    if (
+      round_ml(V1) === round_ml(V1_prev) &&
+      round_ml(V2) === round_ml(V2_prev)
+    ) {
+      stable_count++;
+    } else {
+      stable_count = 0;
+    }
+
+    if (stable_count >= 2 && equilibrium_index === null) {
+      equilibrium_index = i;
+      equilibrium_V1 = V1;
+      equilibrium_V2 = V2;
+    }
+  drawChart(labels, V1_list, V2_list, equilibrium_index);
+  document.getElementById("output").innerHTML =
+    equilibrium_index !== null
+      ? `<b>Gleichgewicht erreicht</b><br>
+         Transfer: ${equilibrium_index + 1}<br>
+         V1 = ${equilibrium_V1.toFixed(1)} mL<br>
+         V2 = ${equilibrium_V2.toFixed(1)} mL`
+      : "<b>Kein Gleichgewicht erreicht</b>";
 }
 
 /* Start with one row */
