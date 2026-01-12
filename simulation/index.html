@@ -136,7 +136,7 @@ function runSimulation() {
   document.getElementById("output").innerHTML =
     equilibrium_index !== null
       ? `<b>Gleichgewicht erreicht</b><br>
-         Transfer: ${equilibrium_index + 1}<br>
+         Transfer: ${equilibrium_index}<br>
          V1 = ${equilibrium_V1.toFixed(1)} mL<br>
          V2 = ${equilibrium_V2.toFixed(1)} mL`
       : "<b>Kein Gleichgewicht erreicht</b>";
@@ -175,8 +175,8 @@ function drawChart(labels, V1_list, V2_list, equilibrium_index) {
           annotations: equilibrium_index !== null ? {
             eq: {
               type: "line",
-              xMin: equilibrium_index,
-              xMax: equilibrium_index,
+              xMin: equilibrium_index + 1,
+              xMax: equilibrium_index + 1,
               borderColor: "red",
               borderDash: [6, 6],
               borderWidth: 2
