@@ -188,8 +188,9 @@ function updateChart() {
       equilibrium_V1 = V1;
       equilibrium_V2 = V2;
     }
-  drawChart(labels, V1_list, V2_list, equilibrium_index);
-  document.getElementById("output").innerHTML =
+  }
+drawChart(labels, V1_list, V2_list, equilibrium_index);
+document.getElementById("output").innerHTML =
     equilibrium_index !== null
       ? `<b>Gleichgewicht erreicht</b><br>
          Transfer: ${equilibrium_index + 1}<br>
