@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>V1 / V2 Chart</title>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Annotation plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+    }
+
+    input[type="number"] {
+      width: 80px;
+    }
+
+    button {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Enter V1 and V2 Values</h2>
+
+<table id="dataTable">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>V1 (mL)</th>
+      <th>V2 (mL)</th>
+      <th>Remove</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
+
+<button onclick="addRow()">Add Row</button>
+<br><br>
+
+<label>
+  Equilibrium index (optional):
+  <input type="number" id="equilibriumIndex" min="0">
+</label>
+
+<br><br>
+<button onclick="updateChart()">Draw Chart</button>
+
+<hr>
+
+<canvas id="chart" width="800" height="400"></canvas>
+
+<script>
+let chart = null;
+
+/* ===== YOUR FUNCTION (unchanged) ===== */
+function drawChart(labels, V1_list, V2_list, equilibrium_index) {
+  const ctx = document.getElementById("chart").getContext("2d");
+
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Volumen V1 (mL)",
+          data: V1_list,
+          borderColor: "blue",
+          fill: false
+        },
+        {
+          label: "Volumen V2 (mL)",
+          data: V2_list,
+          borderColor: "orange",
+          fill: false
+        }
+      ]
+    },
+    options: {
+      plugins: {
+        legend: {
+          onClick: null
+        },
+        annotation: {
+          annotations: equilibrium_index !== null ? {
+            eq: {
+              type: "line",
+              xMin: equilibrium_index,
+              xMax: equilibrium_index,
+              borderColor: "red",
+              borderDash: [6, 6],
+              borderWidth: 2
+            }
+          } : {}
+        }
+      }
+    }
+  });
+}
+
+/* ===== UI LOGIC ===== */
+
+function addRow(v1 = "", v2 = "") {
+  const tbody = document.querySelector("#dataTable tbody");
+  const rowIndex = tbody.children.length;
+
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${rowIndex}</td>
+    <td><input type="number" step="any" class="v1" value="${v1}"></td>
+    <td><input type="number" step="any" class="v2" value="${v2}"></td>
+    <td><button onclick="removeRow(this)">✖</button></td>
+  `;
+
+  tbody.appendChild(row);
+  renumberRows();
+}
+
+function removeRow(button) {
+  button.closest("tr").remove();
+  renumberRows();
+}
+
+function renumberRows() {
+  document.querySelectorAll("#dataTable tbody tr").forEach((row, i) => {
+    row.children[0].textContent = i;
+  });
+}
+
+function updateChart() {
+  const V1_list = [];
+  const V2_list = [];
+  const labels = [];
+
+  document.querySelectorAll("#dataTable tbody tr").forEach((row, i) => {
+    const v1 = row.querySelector(".v1").value;
+    const v2 = row.querySelector(".v2").value;
+
+    if (v1 !== "" && v2 !== "") {
+      V1_list.push(Number(v1));
+      V2_list.push(Number(v2));
+      labels.push(`Point ${i}`);
+    }
+  });
+
+  const eqInput = document.getElementById("equilibriumIndex").value;
+  const equilibrium_index = eqInput === "" ? null : Number(eqInput);
+
+  drawChart(labels, V1_list, V2_list, equilibrium_index);
+}
+
+/* Start with one row */
+addRow();
+</script>
+
+</body>
+</html>
