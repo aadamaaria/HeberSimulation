@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>V1 / V2 Chart</title>
+  <title>V1 / V2 Graph</title>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -37,7 +37,7 @@
 </head>
 <body>
 
-<h2>Enter V1 and V2 Values</h2>
+<h2>Geben sie ihre Daten für V1 und V2 ein</h2>
 
 <table id="dataTable">
   <thead>
@@ -45,20 +45,15 @@
       <th>#</th>
       <th>V1 (mL)</th>
       <th>V2 (mL)</th>
-      <th>Remove</th>
+      <th>Entfernen</th>
     </tr>
   </thead>
   <tbody>
   </tbody>
 </table>
 
-<button onclick="addRow()">Add Row</button>
+<button onclick="addRow()">Reihe hinzufügen</button>
 <br><br>
-
-<label>
-  Equilibrium index (optional):
-  <input type="number" id="equilibriumIndex" min="0">
-</label>
 
 <br><br>
 <button onclick="updateChart()">Draw Chart</button>
