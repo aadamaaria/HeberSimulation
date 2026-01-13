@@ -81,13 +81,13 @@ function drawChart(labels, V1_list, V2_list, equilibrium_index) {
       labels: labels,
       datasets: [
         {
-          label: "Volumen V1 (mL)",
+          label: "Volumen V1 (ml)",
           data: V1_list,
           borderColor: "blue",
           fill: false
         },
         {
-          label: "Volumen V2 (mL)",
+          label: "Volumen V2 (ml)",
           data: V2_list,
           borderColor: "orange",
           fill: false
@@ -194,8 +194,8 @@ document.getElementById("output").innerHTML =
     equilibrium_index !== null
       ? `<b>Gleichgewicht erreicht</b><br>
          Transfer: ${equilibrium_index + 1}<br>
-         V1 = ${equilibrium_V1.toFixed(1)} mL<br>
-         V2 = ${equilibrium_V2.toFixed(1)} mL`
+         V1 = ${equilibrium_V1.toFixed(1)} ml<br>
+         V2 = ${equilibrium_V2.toFixed(1)} ml`
       : "<b>Kein Gleichgewicht erreicht</b>";
 }
 
