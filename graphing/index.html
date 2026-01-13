@@ -35,17 +35,19 @@
     }
   </style>
 </head>
+
+<h1>Stechheber-Modellexperiment</h1>
 <body>
 
-<h2>Geben sie Ihre Daten für V1 und V2 ein</h2>
+<h2>Dateneingabe für V1 und V2</h2>
 
 <table id="dataTable">
   <thead>
     <tr>
       <th>#</th>
-      <th>V1 (ml)</th>
-      <th>V2 (ml)</th>
-      <th>Entfernen</th>
+      <th>V1 (mL)</th>
+      <th>V2 (mL)</th>
+      <th>entfernen</th>
     </tr>
   </thead>
   <tbody>
@@ -81,13 +83,13 @@ function drawChart(labels, V1_list, V2_list, equilibrium_index) {
       labels: labels,
       datasets: [
         {
-          label: "Volumen V1 (ml)",
+          label: "Volumen V1 (mL)",
           data: V1_list,
           borderColor: "blue",
           fill: false
         },
         {
-          label: "Volumen V2 (ml)",
+          label: "Volumen V2 (mL)",
           data: V2_list,
           borderColor: "orange",
           fill: false
@@ -194,8 +196,8 @@ document.getElementById("output").innerHTML =
     equilibrium_index !== null
       ? `<b>Gleichgewicht erreicht</b><br>
          Transfer: ${equilibrium_index + 1}<br>
-         V1 = ${equilibrium_V1.toFixed(1)} ml<br>
-         V2 = ${equilibrium_V2.toFixed(1)} ml`
+         V1 = ${equilibrium_V1.toFixed(1)} mL<br>
+         V2 = ${equilibrium_V2.toFixed(1)} mL`
       : "<b>Kein Gleichgewicht erreicht</b>";
 }
 
